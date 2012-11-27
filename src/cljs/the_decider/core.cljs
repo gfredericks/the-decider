@@ -1,6 +1,9 @@
 (ns the-decider.core
-  (:require [the-decider.math :as math]))
+  (:require [the-decider.math :as math]
+            [jayq.core :as $ :refer [$]])
+  (:require-macros [jayq.macros :as $m]))
 
 (defn run
   []
-  (js/alert (pr-str (math/decide [{:name "Only choice." :options [{:probability 1 :payoff 7}]}]))))
+  ($m/ready
+   ($/append ($ "body") "Hello DOM World!")))
