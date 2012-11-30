@@ -20,3 +20,8 @@
        (sort-by expected-value)
        last
        :name))
+
+(defn values
+  [options]
+  (zipmap (map :name options)
+          (map expected-value options)))
