@@ -1,8 +1,9 @@
 (ns the-decider.core
   (:require [the-decider.ui :as ui]
-            [the-decider.persistence :as ajax]
+            [the-decider.persistence :as saved]
             [jayq.core :as $ :refer [$]]
-            [cljs.reader :refer [read-string]])
+            [cljs.reader :refer [read-string]]
+            [crate.core :refer [html]])
   (:require-macros [jayq.macros :as $m]))
 
 (def example-decision
@@ -28,12 +29,19 @@
                 :probability 0.9
                 :payoff 350}]}])
 
+(def button [:div [:button.save "Save Decision"]])
+
 (defn main
   []
-  (ajax/load-decision
+  ($/append ($ "body") (-> button html $))
+  (saved/load-decision
    (fn [decision]
      (let [{:keys [el state]} (ui/create decision)]
-       ($/append ($ "body") el)))
+       ($/append ($ "body") el)
+       ($/bind ($ "button.save") "click"
+               (fn [ev]
+                 (let [decision @state]
+                   (saved/save-decision decision))))))
    example-decision))
 
 ($m/ready (main))

@@ -21,7 +21,7 @@
         wo-query (subs href 0 (- (count search) (count href)))]
     (->> params
          (map (fn [[k v]]
-                (format "%s=%s" (name k) (js/encodeURIComponent (pr-str v)))))
+                (format "%s=%s" (name k) (js/encodeURIComponent v))))
          (s/join "&")
          (str wo-query "?"))))
 
@@ -34,5 +34,5 @@
 
 (defn save-decision
   [decision]
-  ($m/let-ajax [id {:method "POST", :data (pr-str decision)}]
+  ($m/let-ajax [id {:type "POST", :data (pr-str decision), :url "decisions"}]
                (set! (.-location js/window) (link-here-with-params {:id id}))))
