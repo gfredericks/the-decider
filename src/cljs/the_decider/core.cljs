@@ -1,9 +1,11 @@
 (ns the-decider.core
   (:require [the-decider.ui :as ui]
-            [jayq.core :as $ :refer [$]])
+            [the-decider.persistence :as ajax]
+            [jayq.core :as $ :refer [$]]
+            [cljs.reader :refer [read-string]])
   (:require-macros [jayq.macros :as $m]))
 
-(def example-options
+(def example-decision
   [{:name "Stay home."
     :outcomes [{:name "Nothing happens"
                 :probability 1
@@ -26,8 +28,12 @@
                 :probability 0.9
                 :payoff 350}]}])
 
-(defn run
+(defn main
   []
-  (let [{:keys [el state]} (ui/create example-options)]
-    ($m/ready
-     ($/append ($ "body") el))))
+  (ajax/load-decision
+   (fn [decision]
+     (let [{:keys [el state]} (ui/create decision)]
+       ($/append ($ "body") el)))
+   example-decision))
+
+($m/ready (main))
