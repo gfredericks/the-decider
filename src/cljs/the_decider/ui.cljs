@@ -2,7 +2,8 @@
   (:require [jayq.core :as $ :refer [$]]
             [crate.core :as crate]
             [cljs.reader :refer [read-string]]
-            [the-decider.math :as math]))
+            [the-decider.math :as math])
+  (:require-macros [the-decider.ui-macros :refer [for!]]))
 
 (defn html
   [options]
@@ -24,23 +25,23 @@
 (defn extract-decision-from-dom
   [el]
   ;; TODO: decent macro opportunity? (defmacro for! ...)
-  (doall (for [option-el ($/find el "div.option")
-               :let [option-el ($ option-el)
-                     name ($/attr option-el "data-name")
-                     outcomes (doall (for [outcome-el ($/find option-el "tr.outcome")
-                                           :let [outcome-el ($ outcome-el)
-                                                 name ($/attr outcome-el "data-name")
-                                                 prob (-> outcome-el
-                                                          ($/find "input.probability")
-                                                          ($/val)
-                                                          (read-string))
-                                                 payoff (-> outcome-el
-                                                          ($/find "input.payoff")
-                                                          ($/val)
-                                                          (read-string))]]
-                                       {:name name, :probability prob, :payoff payoff}))]]
-           {:name name
-            :outcomes outcomes})))
+  (for! [option-el ($/find el "div.option")
+        :let [option-el ($ option-el)
+              name ($/attr option-el "data-name")
+              outcomes  (for! [outcome-el ($/find option-el "tr.outcome")
+                              :let [outcome-el ($ outcome-el)
+                                    name ($/attr outcome-el "data-name")
+                                    prob (-> outcome-el
+                                             ($/find "input.probability")
+                                             ($/val)
+                                             (read-string))
+                                    payoff (-> outcome-el
+                                               ($/find "input.payoff")
+                                               ($/val)
+                                               (read-string))]]
+                          {:name name, :probability prob, :payoff payoff})]]
+    {:name name
+     :outcomes outcomes}))
 
 (defn create
   [options]
