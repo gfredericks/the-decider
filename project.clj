@@ -12,7 +12,11 @@
   :cljsbuild {:builds [{:source-path "src/cljs"
                         :compiler {:output-to "resources/public/main.js"
                                    :optimizations :whitespace
-                                   :pretty-print true}}]
+                                   :pretty-print true}}
+                       {:source-path "src/cljs"
+                        :compiler {:output-to "resources/public/main-min.js"
+                                   :optimizations :advanced
+                                   :externs ["externs/jquery-1.8.js"]}}]
               :crossovers [the-decider.math]
               :crossovers-path "src/cljs"}
   :source-paths ["src/clj"]

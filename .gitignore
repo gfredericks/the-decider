@@ -11,3 +11,4 @@ pom.xml
 .crossover*
 .lein-*
 resources/public/main.js
+resources/public/main-min.js
